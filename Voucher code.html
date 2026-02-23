@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #fdfcf0 0%, #e0f7fa 100%);
+            --text-main: #6b705c;
+            --text-muted: #b5b5b5; /* Lighter tone for the hangry text */
+            --pastel-green: #c8e6c9;
+            --pastel-red: #ffcdd2;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Keeps the runner inside the screen */
+        }
+
+        .card {
+            background: white;
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        h1 { color: var(--text-main); margin-bottom: 10px; }
+        
+        .sub-text { 
+            color: var(--text-muted); 
+            font-style: italic; 
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 60px;
+        }
+
+        button {
+            padding: 15px 35px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        #yesBtn {
+            background-color: var(--pastel-green);
+            color: #2e7d32;
+            z-index: 20;
+        }
+
+        #noBtn {
+            background-color: var(--pastel-red);
+            color: #c62828;
+            transition: all 0.2s ease;
+            z-index: 15;
+            white-space: nowrap;
+        }
+
+        .hidden { display: none !important; }
+
+        .success-card {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="proposalCard">
+        <div style="font-size: 3rem; margin-bottom: 10px;">☁️🌸</div>
+        <h1>Will you marry me?</h1>
+        <p class="sub-text">I promise to love you even when I'm hangry.</p>
+        
+        <div class="btn-container">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <div id="successContent" class="card success-card hidden">
+        <div style="font-size: 3rem; margin-bottom: 10px;">💍✨</div>
+        <h1 style="color: #81c784;">ERROR 404!</h1>
+        <p class="sub-text" style="color: #6b705c;">Life without you not found.</p>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const proposalCard = document.getElementById('proposalCard');
+        const successContent = document.getElementById('successContent');
+
+        const phrases = ["Are you sure? 🍦", "Sochlo madam", "Gym chlna pdega sath mein 🍬", "Huh! I'm faster than you 🍭", "Oops! 🧁", "Aise kaise nahi karogi. ✨"];
+
+        // Function to move the "No" button
+        function moveNoButton() {
+            // Switch to fixed positioning so it moves relative to the screen
+            noBtn.style.position = 'fixed';
+            
+            // Calculate random coordinates
+            // We subtract button width/height to keep it within view
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            
+            // Change text randomly
+            noBtn.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+        }
+
+        // Use 'mouseenter' for better desktop response
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        
+        // Handle touch for mobile
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // The YES button logic
+        yesBtn.addEventListener('click', () => {
+            // 1. Hide the proposal card
+            proposalCard.classList.add('hidden');
+            
+            // 2. Show the success message
+            successContent.classList.remove('hidden');
+
+            // 3. Fire the confetti!
+            try {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ffcdd2', '#c8e6c9', '#bbdefb', '#fff9c4']
+                });
+            } catch (e) {
+                console.log("Confetti library didn't load, but the love is still real!");
+            }
+        });
+    </script>
+</body>
+</html>
